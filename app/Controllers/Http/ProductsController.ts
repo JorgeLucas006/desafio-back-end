@@ -18,8 +18,13 @@ export default class ProductsController {
     return product
   }
 
-  public async show ({  }: HttpContextContract) {
-    
+  public async show ({ request, response }: HttpContextContract) {
+    const { id } = await request.params()
+    const product = await Product.findBy('id', id)
+    if(!product){
+      return response.json({'Error': 'product with this id not exist'})
+    }
+    return product
   }
 
   public async update ({}: HttpContextContract) {
