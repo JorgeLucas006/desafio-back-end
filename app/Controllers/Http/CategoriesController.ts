@@ -1,31 +1,31 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Product from 'App/Models/Product'
+import Category from 'App/Models/Category';
 
+export default class CategoriesController {
 
-export default class ProductsController {
   public async index ({}: HttpContextContract) {
-    const product = await Product.query();
+    const product = await Category.query()
     return product
   }
 
   public async store ({ request, response }: HttpContextContract) {
-    const data = await request.only(['name', 'description', 'price'])
-    const alreadyExist = await Product.findBy('name', data.name)
+    const data = await request.only(['name'])
+    const alreadyExist = await Category.findBy('name', data.name)
 
     if(alreadyExist){
-      return response.json({'Error': 'product already exist'})
+      return response.json({'Error': 'category already exist'})
     }
 
-    const product = await Product.create(data)
+    const product = await Category.create(data)
     return product
   }
 
   public async show ({ request, response }: HttpContextContract) {
     const { id } = await request.params()
-    const product = await Product.findBy('id', id)
+    const product = await Category.findBy('id', id)
 
     if(!product){
-      return response.json({'Error': 'product with this id not exist'})
+      return response.json({'Error': 'category with this id not exist'})
     }
 
     return product
@@ -33,11 +33,11 @@ export default class ProductsController {
 
   public async update ({ request, response }: HttpContextContract) {
     const { id } = await request.params()
-    const data = await request.only(['name', 'description', 'price'])
-    const product = await Product.findBy('id', id)
+    const data = await request.only(['name'])
+    const product = await Category.findBy('id', id)
 
     if(!product){
-      return response.json({'Error': 'product with this id not exist'})
+      return response.json({'Error': 'category with this id not exist'})
     }
 
     product.merge(data)
@@ -47,10 +47,10 @@ export default class ProductsController {
 
   public async destroy ({ request, response }: HttpContextContract) {
     const { id } = await request.params()
-    const product = await Product.findBy('id', id)
+    const product = await Category.findBy('id', id)
 
     if(!product){
-      return response.json({'Error': 'product with this id not exist'})
+      return response.json({'Error': 'category with this id not exist'})
     }
 
     product.delete()
