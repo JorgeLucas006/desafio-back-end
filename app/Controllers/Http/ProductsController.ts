@@ -8,13 +8,18 @@ export default class ProductsController {
     return product
   }
 
-  public async store ({ request }: HttpContextContract) {
+  public async store ({ request, response }: HttpContextContract) {
     const data = await request.only(['name', 'description', 'price'])
+    const alreadyExist = await Product.findBy('name', data.name)
+    if(alreadyExist){
+      return response.json({'Error': 'product already exist'})
+    }
     const product = await Product.create(data)
     return product
   }
 
-  public async show ({}: HttpContextContract) {
+  public async show ({  }: HttpContextContract) {
+    
   }
 
   public async update ({}: HttpContextContract) {
