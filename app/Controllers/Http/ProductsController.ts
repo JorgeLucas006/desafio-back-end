@@ -45,7 +45,16 @@ export default class ProductsController {
     return product
   }
 
-  public async destroy ({  }: HttpContextContract) {
-    
+  public async destroy ({ request, response }: HttpContextContract) {
+    const { id } = await request.params()
+    const product = await Product.findBy('id', id)
+
+    if(!product){
+      return response.json({'Error': 'product with this id not exist'})
+    }
+
+    product.delete()
+    await product.save()
+    return product
   }
 }
