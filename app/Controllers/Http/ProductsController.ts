@@ -4,7 +4,7 @@ import Product from 'App/Models/Product'
 
 export default class ProductsController {
   public async index ({}: HttpContextContract) {
-    const product = await Product.query();
+    const product = await Product.query()
     return product
   }
 
