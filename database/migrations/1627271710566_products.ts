@@ -9,6 +9,7 @@ export default class Products extends BaseSchema {
       table.string('name').notNullable().unique()
       table.text('description').notNullable()
       table.decimal('price').notNullable().unsigned()
+      table.integer('category_id').unsigned().notNullable().references('categories.id')
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

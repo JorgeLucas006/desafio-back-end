@@ -20,5 +20,5 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.resource('products', 'ProductsController').apiOnly()
-Route.resource('category', 'CategoriesController').apiOnly()
+Route.resource('categories', 'CategoriesController').apiOnly()
+Route.resource('categories.products', 'ProductsController').apiOnly()
