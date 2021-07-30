@@ -5,66 +5,64 @@ export default class CategoriesController {
 
   public async index({ }: HttpContextContract) {
     // Listando as categorias juntamente com os produtos
-    const product = await Category.query().preload('product')
-    return product
+    const category = await Category.query().preload('product')
+    return category
   }
 
   public async store({ request, response }: HttpContextContract) {
     // Pegando o body do usuario
-    const data = await request.only(['name'])
+    const { name } = await request.body()
     // Vendo no banco se existe alguma categoria ja cadastrada com aquele nome
-    const alreadyExist = await Category.findBy('name', data.name)
+    const alreadyExist = await Category.findBy('name', name.trim())
 
-    if (alreadyExist) {
-      // Respondendo para o usuario que aquela categoria ja existe 
+    if (alreadyExist)
+      // Respondendo para o usuario que aquela categoria ja existe
       return response.json({ 'Error': 'category already exist' })
-    }
+
     // Salvando no banco
-    const product = await Category.create(data)
-    return product
+    const category = await Category.create({name: name.trim()})
+    return category
   }
 
   public async show({ request, response }: HttpContextContract) {
     // Pegando o id pelos parametros
     const { id } = await request.params()
     // Verificando se esse id ja existe
-    const product = await Category.findBy('id', id)
-
+    const category = await Category.query().where('id', id).preload('product')
     // Se não existir é respondido com mensagem de erro
-    if (!product) {
+    if (!category)
       return response.json({ 'Error': 'category with this id not exist' })
-    }
+
     // Caso exista o id ele é mostrado ao usuario
-    return product
+    return category
   }
 
   public async update({ request, response }: HttpContextContract) {
     // Pegando id pelo parametro
     const { id } = await request.params()
     // Pegando o body
-    const data = await request.only(['name'])
+    const { name } = await request.body()
     // Verficando se aquele id existe
-    const product = await Category.findBy('id', id)
+    const category = await Category.findBy('id', id)
     // Caso não exista é respondida com msg de erro
-    if (!product) {
+    if (!category)
       return response.json({ 'Error': 'category with this id not exist' })
-    }
+
     // Caso exista é alterada e salva no banco
-    product.merge(data)
-    await product.save()
-    return product
+    await category.merge({name: name.trim()})
+    await category.save()
+    return category
   }
 
   public async destroy({ request, response }: HttpContextContract) {
     const { id } = await request.params()
-    const product = await Category.findBy('id', id)
+    const category = await Category.findBy('id', id)
 
-    if (!product) {
+    if (!category)
       return response.json({ 'Error': 'category with this id not exist' })
-    }
 
-    product.delete()
-    await product.save()
-    return product
+    await category.delete()
+    await category.save()
+    return category
   }
 }
